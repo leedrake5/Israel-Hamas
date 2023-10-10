@@ -37,7 +37,7 @@ library(data.table)
 library(janitor)
 source("~/GitHub/scrape_oryx/R/functions.R")
 
-source("/Users/lee/GitHub/Israel-Hamas-War/R/Automation/back.r")
+source("/Users/lee/GitHub/Israel-Hamas/R/Automation/back.r")
 
 googlesheets4::gs4_auth_configure(api_key=api_key)
 
@@ -218,17 +218,17 @@ daily_update <- function(link="https://armadarotta.blogspot.com/2023/10/israel-a
     
     result_list <- list()
     for(i in dates[1:length(dates)-1]){
-        result_list[[as.character(as.Date(i, format="%Y-%m-%d", origin="1970-01-01"))]] <- read.csv(paste0("~/GitHub/Israel-Hamas-War/data/byType/", as.Date(i, format="%Y-%m-%d", origin="1970-01-01"), ".csv"))[,-1]
+        result_list[[as.character(as.Date(i, format="%Y-%m-%d", origin="1970-01-01"))]] <- read.csv(paste0("~/GitHub/Israel-Hamas/data/byType/", as.Date(i, format="%Y-%m-%d", origin="1970-01-01"), ".csv"))[,-1]
     }
     result_list[[as.character(as.Date(Sys.Date(), format="%Y-%m-%d", origin="1970-01-01"))]] <- totals_by_type(date=as.character(as.Date(Sys.Date(), format="%Y-%m-%d", origin="1970-01-01")))
-    write.csv(result_list[[as.character(as.Date(Sys.Date(), format="%Y-%m-%d", origin="1970-01-01"))]], paste0("~/GitHub/Israel-Hamas-War/data/byType/", as.character(as.Date(Sys.Date(), format="%Y-%m-%d", origin="1970-01-01")), ".csv"))
+    write.csv(result_list[[as.character(as.Date(Sys.Date(), format="%Y-%m-%d", origin="1970-01-01"))]], paste0("~/GitHub/Israel-Hamas/data/byType/", as.character(as.Date(Sys.Date(), format="%Y-%m-%d", origin="1970-01-01")), ".csv"))
 
     current_frame <- data.table::rbindlist(result_list, use.names=TRUE, fill=TRUE)
     current_frame <- as.data.frame(current_frame)
     current_frame <- current_frame[,colnames(current_frame)[!colnames(current_frame) %in% "row_id"]]
     current_frame <- as.data.table(current_frame)
     results <- totals_fold(totals_df=current_frame)
-    
+    write.csv(results$Totals, "~/GitHub/Israel-Hamas/data/current_totals.csv")
     googleSheetPush(results)
     
     if(!is.null(to_return)){

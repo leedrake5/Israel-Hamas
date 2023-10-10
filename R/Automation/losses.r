@@ -43,7 +43,6 @@ library(zoo)
 
 country_colors <-   c("Israel" = "#1430A9", "Hamas" = "#31711D")
 
-R49 G113 B29
 
 ggplot2::theme_set(ggplot2::theme_minimal())
 # options(ggplot2.continuous.fill  = function() scale_fill_viridis_c())
@@ -53,13 +52,10 @@ ggplot2::theme_set(ggplot2::theme_minimal())
 
 
 
-equipment_losses <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1uxCivR-Dc7AiBUNKOWEarmb4zaoA11kEgSAt8vO1zUs/edit#gid=0", sheetid="Origional")
-equipment_totals <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1uxCivR-Dc7AiBUNKOWEarmb4zaoA11kEgSAt8vO1zUs/edit#gid=0", sheetid="Totals")
-equipment_destroyed <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1uxCivR-Dc7AiBUNKOWEarmb4zaoA11kEgSAt8vO1zUs/edit#gid=0", sheetid="Destroyed")
-equipment_damaged <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1uxCivR-Dc7AiBUNKOWEarmb4zaoA11kEgSAt8vO1zUs/edit#gid=0", sheetid="Damaged")
-equipment_captures <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1uxCivR-Dc7AiBUNKOWEarmb4zaoA11kEgSAt8vO1zUs/edit#gid=0", sheetid="Captures")
-equipment_captures <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1uxCivR-Dc7AiBUNKOWEarmb4zaoA11kEgSAt8vO1zUs/edit#gid=0", sheetid="Captures")
-#equipment_synthetic <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1uxCivR-Dc7AiBUNKOWEarmb4zaoA11kEgSAt8vO1zUs/edit#gid=0", sheetid="Synthetic")
+equipment_losses <- read.csv("~/GitHub/Israel-Hamas/data/current_totals.csv")
+equipment_losses$Date <- as.Date(equipment_losses$Date)
+equipment_totals <- read.csv("~/GitHub/Israel-Hamas/data/current_totals.csv")
+equipment_totals$Date <- as.Date(equipment_totals$Date)
 
 
 
@@ -84,7 +80,7 @@ current_total <-
   theme_light() + 
   scale_colour_manual(values = country_colors)  + 
   scale_fill_manual(values = country_colors)
-ggsave("~/Github/Israel-Hamas-War/Plots/current_total.jpg", current_total, device="jpg", width=6, height=5)
+ggsave("~/Github/Israel-Hamas/Plots/current_total.jpg", current_total, device="jpg", width=6, height=5)
 
 ####Totals Ratio
 total_ratio_frame <- data.frame(Date=equipment_losses$Date, Ratio=equipment_losses$Israel_Total/equipment_losses$Hamas_Total)
@@ -102,13 +98,13 @@ current_ratio <-
   scale_y_continuous("Total Equipment Loss Ratio Isr:Hms", breaks = function(x) unique(floor(pretty(seq(0, (max(x) + 1) * 1.1))))) +
   ggtitle(paste0("Total equipment loss ratio through ", Sys.Date())) +
   theme_light()
-ggsave("~/Github/Israel-Hamas-War/Plots/current_ratio.jpg", current_ratio, device="jpg", width=6, height=5)
+ggsave("~/Github/Israel-Hamas/Plots/current_ratio.jpg", current_ratio, device="jpg", width=6, height=5)
 
 ###Map
 ggmap::register_google(key = maps_key)
 
 firms <- read.csv("https://firms.modaps.eosdis.nasa.gov/data/active_fire/noaa-20-viirs-c2/csv/J1_VIIRS_C2_Russia_Asia_24h.csv")
-write.csv(firms, paste0("~/GitHub/Israel-Hamas-War/data/FIRMS/", Sys.Date(), ".csv"))
+write.csv(firms, paste0("~/GitHub/Israel-Hamas/data/FIRMS/", Sys.Date(), ".csv"))
 #firms <- firms[firms$latitude < 52.3 & firms$latitude > 44.1 & firms$longitude < 40.3 & firms$latitude > 26,]
 colnames(firms)[1] <- "lat"
 colnames(firms)[2] <- "lon"
@@ -122,7 +118,7 @@ gaza_map <- ggmap(gaza) +
   geom_point(data=firms, mapping=aes(x=lon, y=lat, colour=NASA), alpha=0.5) +
   ggtitle(paste0("Gaza region on ", Sys.Date())) + theme_light()
 
-ggsave("~/Github/Israel-Hamas-War/Maps/gaza_map.jpg", gaza_map, device="jpg", width=6, height=5, dpi=600)
+ggsave("~/Github/Israel-Hamas/Maps/gaza_map.jpg", gaza_map, device="jpg", width=6, height=5, dpi=600)
 
 ###Lebanon
 lebanon <- ggmap::get_map(location=c(lon=35.4, lat=33.1), source="google", maptype="roadmap", crop=FALSE, zoom=10)
@@ -132,7 +128,7 @@ lebanon_map <- ggmap(lebanon) +
 geom_point(data=firms, mapping=aes(x=lon, y=lat, colour=NASA), alpha=0.5) +
 ggtitle(paste0("Lebanon border on ", Sys.Date())) + theme_light()
 
-ggsave("~/Github/Israel-Hamas-War/Maps/lebanon_map.jpg", lebanon_map, device="jpg", width=6, height=5, dpi=600)
+ggsave("~/Github/Israel-Hamas/Maps/lebanon_map.jpg", lebanon_map, device="jpg", width=6, height=5, dpi=600)
 
 ###West Bank
 westbank <- ggmap::get_map(location=c(lon=35.2, lat=31.9), source="google", maptype="roadmap", crop=FALSE, zoom=10)
@@ -142,7 +138,7 @@ westbank_map <- ggmap(westbank) +
 geom_point(data=firms, mapping=aes(x=lon, y=lat, colour=NASA), alpha=0.5) +
 ggtitle(paste0("West Bank on ", Sys.Date())) + theme_light()
 
-ggsave("~/Github/Israel-Hamas-War/Maps/westbank_map.jpg", westbank_map, device="jpg", width=6, height=5, dpi=600)
+ggsave("~/Github/Israel-Hamas/Maps/westbank_map.jpg", westbank_map, device="jpg", width=6, height=5, dpi=600)
 
 
 ###FIRMS Analysis
@@ -150,7 +146,7 @@ dates = seq(as.Date("2023-10-07"), Sys.Date(), by="days")
 
 firms_list <- list()
 for(i in dates){
-  tryCatch(firms_list[[as.character(i)]] <- data.table::fread(paste0("~/GitHub/Israel-Hamas-War/data/FIRMS/",  as.Date(i, format="%Y-%m-%d", origin="1970-01-01"), ".csv"))[,-1], error=function(e) NULL)
+  tryCatch(firms_list[[as.character(i)]] <- data.table::fread(paste0("~/GitHub/Israel-Hamas/data/FIRMS/",  as.Date(i, format="%Y-%m-%d", origin="1970-01-01"), ".csv"))[,-1], error=function(e) NULL)
 }
 
 new_firms_frame <- as.data.frame(data.table::rbindlist(firms_list, use.names=TRUE, fill=TRUE))
@@ -199,4 +195,4 @@ axis_firms_summary_plot <- ggplot(axis_firms_summary, aes(Date, FRP, colour=Regi
   theme_light() +
   theme(legend.position = "none")
 
-ggsave("~/Github/Israel-Hamas-War/Plots/region_firms_summary_plot.jpg", axis_firms_summary_plot, device="jpg", width=6, height=6, dpi=600)
+ggsave("~/Github/Israel-Hamas/Plots/region_firms_summary_plot.jpg", axis_firms_summary_plot, device="jpg", width=6, height=6, dpi=600)
