@@ -142,7 +142,7 @@ ggsave("~/Github/Israel-Hamas/Maps/westbank_map.jpg", westbank_map, device="jpg"
 
 
 ###FIRMS Analysis
-dates = seq(as.Date("2023-10-07"), Sys.Date(), by="days")
+dates = seq(as.Date("2023-10-01"), Sys.Date(), by="days")
 
 firms_list <- list()
 for(i in dates){
@@ -152,7 +152,7 @@ for(i in dates){
 new_firms_frame <- as.data.frame(data.table::rbindlist(firms_list, use.names=TRUE, fill=TRUE))
 new_firms_frame$acq_date <- as.Date(new_firms_frame$acq_date)
 
-gaza_firms <- new_firms_frame[new_firms_frame$latitude < 31.5 & new_firms_frame$latitude > 31.1 & new_firms_frame$longitude < 34.7 & new_firms_frame$longitude > 34.1,]
+gaza_firms <- new_firms_frame[new_firms_frame$latitude < 31.7 & new_firms_frame$latitude > 31.1 & new_firms_frame$longitude < 34.7 & new_firms_frame$longitude > 34.1,]
 gaza_dates = seq(as.Date("2023-10-01"), Sys.Date(), by="days")
 gaza_date_firms <- list()
 gaza_means_firms <- list()
