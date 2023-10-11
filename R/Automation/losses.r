@@ -73,7 +73,7 @@ current_total <-
   ggplot(total_melt, aes(Date, Total, colour=Country)) +
   geom_col(data=total_melt, mapping=aes(Date, Daily, colour=Country,  fill=Country), alpha=0.8, position = position_dodge(0.7)) + 
   geom_point(show.legend=FALSE, size=0.1) +
-  geom_line(stat="smooth", method="gam", size=1, linetype="solid", alpha=0.5, show.legend=FALSE) + 
+  geom_line(stat="smooth", method="loess", size=1, linetype="solid", alpha=0.5, show.legend=FALSE) +
   scale_x_date(date_labels = "%Y/%m/%d") +
   scale_y_continuous("Total Equipment Losses") +
   ggtitle(paste0("Total equipment losses through ", Sys.Date())) +
@@ -93,7 +93,7 @@ current_ratio <-
   ggplot(total_ratio_frame, aes(Date, Ratio)) +
   geom_col(data=total_ratio_frame, mapping=aes(Date, Daily), alpha=0.8, position = position_dodge(0.7)) +
   geom_point(show.legend=FALSE, size=0.1) +
-  geom_line(stat="smooth", method="gam", size=1, linetype="solid", alpha=0.5, show.legend=FALSE) +
+  geom_line(stat="smooth", method="loess", size=1, linetype="solid", alpha=0.5, show.legend=FALSE) +
   scale_x_date(date_labels = "%Y/%m/%d") +
   scale_y_continuous("Total Equipment Loss Ratio Isr:Hms", breaks = function(x) unique(floor(pretty(seq(0, (max(x) + 1) * 1.1))))) +
   ggtitle(paste0("Total equipment loss ratio through ", Sys.Date())) +
