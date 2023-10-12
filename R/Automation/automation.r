@@ -246,18 +246,13 @@ scrape_data <- function(country, date=NULL) {
         date <- format(Sys.Date(), "%m/%d/%Y")
      }
     
-  if (country == "Russia") {
-    url <-
-      russia_url
-  } else {
-    url <-
-      ukraine_url
-  }
 
   materiel <-
-    get_data(url,
-             "article") %>%
-    rvest::html_elements("span")
+  get_data(
+    url,
+    "article div"
+  ) %>%
+  rvest::html_elements("b")
 
   data <-
     tibble::tibble(
